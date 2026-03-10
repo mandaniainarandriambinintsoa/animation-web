@@ -1,0 +1,33 @@
+# animation.web
+
+> Banque d'animations web production-ready pour React/Next.js. Code copiable, CSS inclus, instructions d'integration.
+
+## API
+
+- [List all animations](/api/animations): GET /api/animations
+- [Get animation by slug](/api/animations/{slug}): GET /api/animations/{slug} — returns code, CSS, and instructions
+- [Search animations](/api/animations/search?q={query}): GET /api/animations/search?q={query}&tags={tags}&difficulty={difficulty}&include_code=true
+
+## MCP Server
+
+POST /api/mcp — Model Context Protocol (JSON-RPC 2.0) endpoint for AI agents.
+
+Available tools:
+- list_animations: List all animations, filterable by difficulty and tag
+- get_animation: Get complete code + CSS + integration instructions for a specific animation
+- search_animations: Search animations by keyword
+
+## Available Animations
+
+- 3d-tilt: 3D Tilt Hero — Images with perspective tilt on mouse move
+- path-draw: SVG Path Draw — Stroke animation triggered on scroll
+- flow-lines: Flow Lines — Animated SVG dashes flowing to a hub
+- flow-circles: Flow Circles — Colored circles traveling along SVG paths
+- s-curve-arrow: S-Curve Arrow — Arrow following an S-curve with smooth easing
+- border-spin: Border Spin — Rotating conic-gradient border on hover
+- scroll-arcs: Scroll Arcs — Concentric arcs rotating based on scroll position
+- marquee: Marquee — Infinite horizontal scrolling loop
+- char-spin: Char Spin — Characters appearing with Y-axis rotation
+- anti-grid-tabs: Anti-Grid Tabs — Tabs with concave curves connecting to content
+- eye-tracking: Eye Tracking Tilt — Cards with eyes following cursor + 3D tilt
+- card-carousel: Card Carousel Effects — Multiple hover effects (fan, stack, 3D fade, colorize, camera)
