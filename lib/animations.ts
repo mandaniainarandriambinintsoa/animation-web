@@ -109,6 +109,15 @@ export const animations: AnimationEntry[] = [
     cssRequired: false,
   },
   {
+    slug: "anti-grid-bento",
+    name: "Anti-Grid Bento",
+    description: "Bento grid 2D avec cartes connectees par bridges, courbes concaves clipPath aux jonctions, et border-radius selectif.",
+    tags: ["CSS", "grid", "layout", "bento", "SaaS", "advanced"],
+    trigger: "Static (layout)",
+    difficulty: "hard",
+    cssRequired: false,
+  },
+  {
     slug: "card-carousel",
     name: "Card Carousel Effects",
     description: "Carousel horizontal avec differents effets hover par card : fan spread, stack shift, 3D fade, colorize, camera pan.",

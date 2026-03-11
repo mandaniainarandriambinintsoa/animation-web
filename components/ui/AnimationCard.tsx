@@ -22,6 +22,7 @@ const previews: Record<string, React.ComponentType> = {
   "char-spin": dynamic(() => import("@/components/animations/PreviewCharSpin"), { ssr: false }),
   "anti-grid-tabs": dynamic(() => import("@/components/animations/PreviewAntiGridTabs"), { ssr: false }),
   "eye-tracking": dynamic(() => import("@/components/animations/PreviewEyeTracking"), { ssr: false }),
+  "anti-grid-bento": dynamic(() => import("@/components/animations/PreviewAntiGridBento"), { ssr: false }),
   "card-carousel": dynamic(() => import("@/components/animations/PreviewCardCarousel"), { ssr: false }),
 };
 

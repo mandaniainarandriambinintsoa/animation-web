@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# animation.web
+
+A curated collection of production-ready web animations. Browse, preview live, and copy the code directly into your project.
+
+**[Live Demo](https://animation-web-orpin.vercel.app)**
+
+## Features
+
+- **13 animations** — hover effects, scroll-driven, SVG, CSS-only, interactive JS
+- **Live preview** — each animation runs in an interactive sandbox
+- **Copy-paste code** — one-click copy for every animation snippet
+- **Filterable catalog** — filter by tags (hover, scroll, SVG, CSS, JS...) and difficulty (easy / medium / hard)
+- **Fully static** — all pages pre-rendered at build time (SSG)
+- **Dark theme** — designed for dark mode with a minimal, modern aesthetic
+
+## Animations
+
+| Animation | Technique | Difficulty |
+|-----------|-----------|------------|
+| 3D Tilt Hero | perspective + rotateX/Y on mousemove | Medium |
+| SVG Path Draw | stroke-dashoffset + IntersectionObserver | Easy |
+| Flow Lines | SVG dash animation loop | Medium |
+| Flow Circles | SVG `<animateMotion>` along paths | Medium |
+| S-Curve Arrow | `<animateMotion>` with spline easing | Medium |
+| Border Spin | conic-gradient + `@property` rotation | Easy |
+| Scroll Arcs | Concentric arcs rotating on scroll (rAF) | Hard |
+| Marquee | Infinite horizontal scroll (CSS only) | Easy |
+| Char Spin | Per-character rotateY reveal | Easy |
+| Anti-Grid Tabs | Concave curves with boxShadow technique | Hard |
+| Anti-Grid Bento | 2D bento grid with clipPath concave curves + bridges | Hard |
+| Eye Tracking Tilt | Pupils follow cursor + 3D card tilt | Hard |
+| Card Carousel | Fan spread, stack shift, 3D fade, colorize, camera pan | Medium |
+
+## Tech Stack
+
+- **Next.js 16** (App Router, Static Site Generation)
+- **TypeScript**
+- **Tailwind CSS v4**
+- **Geist** font family (Sans + Mono)
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+  page.tsx                    Landing page with animation grid
+  animations/
+    page.tsx                  Filterable catalog
+    [slug]/page.tsx           Animation detail (SSG)
+components/
+  animations/                 13 live preview components
+  ui/                         AnimationCard, CopyButton
+lib/
+  animations.ts               Animation data (slug, tags, difficulty)
+```
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+Deployed on **Vercel** with zero configuration. Every push to `master` triggers a new build.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

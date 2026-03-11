@@ -25,7 +25,7 @@ export default function Home() {
             Explorer
           </Link>
           <a
-            href="https://github.com"
+            href="https://github.com/mandaniainarandriambinintsoa/animation-web"
             target="_blank"
             rel="noopener noreferrer"
             className="h-11 px-6 rounded-full border border-border text-sm font-medium text-foreground flex items-center hover:bg-white/5 transition-colors"

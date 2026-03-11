@@ -14,6 +14,7 @@ const PreviewSCurve = dynamic(() => import("@/components/animations/PreviewSCurv
 const PreviewScrollArcs = dynamic(() => import("@/components/animations/PreviewScrollArcs"), { ssr: false });
 const PreviewAntiGridTabs = dynamic(() => import("@/components/animations/PreviewAntiGridTabs"), { ssr: false });
 const PreviewEyeTracking = dynamic(() => import("@/components/animations/PreviewEyeTracking"), { ssr: false });
+const PreviewAntiGridBento = dynamic(() => import("@/components/animations/PreviewAntiGridBento"), { ssr: false });
 const PreviewCardCarousel = dynamic(() => import("@/components/animations/PreviewCardCarousel"), { ssr: false });
 
 const previews: Record<string, React.ComponentType> = {
@@ -28,6 +29,7 @@ const previews: Record<string, React.ComponentType> = {
   "scroll-arcs": PreviewScrollArcs,
   "anti-grid-tabs": PreviewAntiGridTabs,
   "eye-tracking": PreviewEyeTracking,
+  "anti-grid-bento": PreviewAntiGridBento,
   "card-carousel": PreviewCardCarousel,
 };
 
@@ -277,6 +279,60 @@ export default function EyeTrackingTilt() {
       {/* Yeux: <div style={{ width: 18, height: 18, borderRadius: "50%", bg: "#fff" }}> */}
       {/* Pupille: <div ref={...} style={{ width: 8, height: 8, borderRadius: "50%", bg: "#1a1a2e" }}> */}
     </section>
+  );
+}`,
+
+  "anti-grid-bento": `/* Anti-Grid Bento — Connected cards with concave curves */
+
+/* 1. Grid layout: 4 cols, defined rows, gap creates space for bridges */
+<div className="grid gap-[28px]" style={{
+  gridTemplateColumns: "repeat(4, 1fr)",
+  gridTemplateRows: "700px 252px 252px",
+}}>
+
+  {/* Hero card — selective border-radius: connected corner = 0 */}
+  <div style={{
+    gridColumn: "1 / -1",
+    borderRadius: "42px 42px 42px 0px", /* bottom-left = 0 (connected) */
+    border: "1.6px solid #161616",
+    backgroundColor: "#0d0d0d",
+  }}>...</div>
+
+  {/* Chart card — connected to hero above */}
+  <div style={{
+    gridColumn: "1 / span 3",
+    gridRow: "2 / span 2",
+    borderRadius: "0px 0px 42px 42px", /* top corners = 0 (connected) */
+  }}>...</div>
+
+  {/* Feature cards — standalone, full radius */}
+  <div style={{ borderRadius: 42 }}>...</div>
+</div>
+
+/* 2. Bridge: fills the gap between connected cards */
+<div className="pointer-events-none relative z-10"
+  style={{ gridColumn: "1 / span 3", gridRow: "2 / span 2" }}>
+  <div className="absolute bg-[#0d0d0d]"
+    style={{ top: -32, left: -2, width: "calc(100% + 4px)", height: 34 }} />
+</div>
+
+/* 3. Concave curve: clipPath triangle + oversized circle */
+function AntiGridCurve({ rotate = "0deg" }) {
+  return (
+    <div style={{
+      width: 64, height: 64,
+      clipPath: "polygon(0 100%, 100% 0, 0 0)",
+      rotate,
+    }}>
+      {/* Background fill */}
+      <div style={{ width: 66, height: 66, backgroundColor: "#0d0d0d" }} />
+      {/* Circle creates the concave illusion */}
+      <div className="absolute inset-0 rounded-full" style={{
+        width: 134.5, height: 134.5,
+        backgroundColor: "#020202",
+        border: "1.6px solid #161616",
+      }} />
+    </div>
   );
 }`,
 
