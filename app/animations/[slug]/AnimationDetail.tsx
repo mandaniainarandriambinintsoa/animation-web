@@ -36,6 +36,21 @@ const PreviewVerticalTabs = dynamic(() => import("@/components/animations/Previe
 const PreviewSpotlightButton = dynamic(() => import("@/components/animations/PreviewSpotlightButton"), { ssr: false });
 const PreviewGridPattern = dynamic(() => import("@/components/animations/PreviewGridPattern"), { ssr: false });
 const PreviewDotPattern = dynamic(() => import("@/components/animations/PreviewDotPattern"), { ssr: false });
+const PreviewAuroraBackground = dynamic(() => import("@/components/animations/PreviewAuroraBackground"), { ssr: false });
+const PreviewMeteors = dynamic(() => import("@/components/animations/PreviewMeteors"), { ssr: false });
+const PreviewFlipWords = dynamic(() => import("@/components/animations/PreviewFlipWords"), { ssr: false });
+const PreviewTypewriter = dynamic(() => import("@/components/animations/PreviewTypewriter"), { ssr: false });
+const PreviewNumberTicker = dynamic(() => import("@/components/animations/PreviewNumberTicker"), { ssr: false });
+const PreviewBorderBeam = dynamic(() => import("@/components/animations/PreviewBorderBeam"), { ssr: false });
+const PreviewWobbleCard = dynamic(() => import("@/components/animations/PreviewWobbleCard"), { ssr: false });
+const PreviewMorphingText = dynamic(() => import("@/components/animations/PreviewMorphingText"), { ssr: false });
+const PreviewConfetti = dynamic(() => import("@/components/animations/PreviewConfetti"), { ssr: false });
+const PreviewBlobCursor = dynamic(() => import("@/components/animations/PreviewBlobCursor"), { ssr: false });
+const PreviewTextPressure = dynamic(() => import("@/components/animations/PreviewTextPressure"), { ssr: false });
+const PreviewBlurText = dynamic(() => import("@/components/animations/PreviewBlurText"), { ssr: false });
+const PreviewSplitText = dynamic(() => import("@/components/animations/PreviewSplitText"), { ssr: false });
+const PreviewShinyText = dynamic(() => import("@/components/animations/PreviewShinyText"), { ssr: false });
+const PreviewGlitchText = dynamic(() => import("@/components/animations/PreviewGlitchText"), { ssr: false });
 
 const previews: Record<string, React.ComponentType> = {
   "3d-tilt": Preview3DTilt,
@@ -71,6 +86,21 @@ const previews: Record<string, React.ComponentType> = {
   "spotlight-button": PreviewSpotlightButton,
   "grid-pattern": PreviewGridPattern,
   "dot-pattern": PreviewDotPattern,
+  "aurora-background": PreviewAuroraBackground,
+  "meteors": PreviewMeteors,
+  "flip-words": PreviewFlipWords,
+  "typewriter": PreviewTypewriter,
+  "number-ticker": PreviewNumberTicker,
+  "border-beam": PreviewBorderBeam,
+  "wobble-card": PreviewWobbleCard,
+  "morphing-text": PreviewMorphingText,
+  "confetti": PreviewConfetti,
+  "blob-cursor": PreviewBlobCursor,
+  "text-pressure": PreviewTextPressure,
+  "blur-text": PreviewBlurText,
+  "split-text": PreviewSplitText,
+  "shiny-text": PreviewShinyText,
+  "glitch-text": PreviewGlitchText,
 };
 
 const codeSnippets: Record<string, string> = {
@@ -1067,6 +1097,442 @@ export default function SpotlightButton({ children }: { children: React.ReactNod
   <svg className="absolute inset-0 w-full h-full" />
   <div className="relative z-10">Votre contenu ici</div>
 </div>`,
+
+  "aurora-background": `/* Aurora Background — gradients multicouches animes */
+
+/* 3 couches de radial-gradient avec background-position anime */
+<div style={{
+  position: "relative", width: "100%", height: "100%",
+  background: "#050505", overflow: "hidden",
+}}>
+  {/* Couche 1: bleu/violet */}
+  <div style={{
+    position: "absolute", inset: 0, opacity: 0.5,
+    background: "radial-gradient(ellipse at 50% 50%, rgba(76,29,149,0.4), transparent 70%)",
+    animation: "aurora1 20s ease-in-out infinite alternate",
+  }} />
+  {/* Couche 2: teal/vert */}
+  <div style={{
+    position: "absolute", inset: 0, opacity: 0.3,
+    background: "radial-gradient(ellipse at 30% 60%, rgba(6,182,212,0.4), transparent 70%)",
+    animation: "aurora2 25s ease-in-out infinite alternate",
+  }} />
+  {/* Contenu par-dessus */}
+  <div className="relative z-10">{children}</div>
+</div>
+
+/* Keyframes */
+@keyframes aurora1 {
+  0% { background-position: 50% 50%; }
+  100% { background-position: 350% 50%; }
+}`,
+
+  "meteors": `/* Meteors — pluie de meteores CSS */
+{Array.from({ length: 15 }).map((_, i) => (
+  <div key={i} style={{
+    position: "absolute",
+    top: \`\${Math.random() * 60}%\`,
+    left: \`\${Math.random() * 100}%\`,
+    width: \`\${Math.random() * 80 + 40}px\`,
+    height: "1px",
+    background: "linear-gradient(to right, #E1FF6C, transparent)",
+    transform: "rotate(215deg)",
+    animation: \`meteor \${Math.random() * 3 + 2}s linear \${Math.random() * 5}s infinite\`,
+  }} />
+))}
+
+@keyframes meteor {
+  0% { transform: rotate(215deg) translateX(0); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: rotate(215deg) translateX(-500px); opacity: 0; }
+}`,
+
+  "flip-words": `"use client";
+import { useState, useEffect } from "react";
+
+// Mots qui cyclent avec animation slide
+const words = ["beautiful", "modern", "amazing", "creative"];
+
+export default function FlipWords() {
+  const [index, setIndex] = useState(0);
+  const [animating, setAnimating] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setAnimating(true);
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % words.length);
+        setAnimating(false);
+      }, 300);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <span style={{
+      display: "inline-block",
+      transform: animating ? "translateY(-20px)" : "translateY(0)",
+      opacity: animating ? 0 : 1,
+      transition: "transform 0.3s, opacity 0.3s",
+    }}>
+      {words[index]}
+    </span>
+  );
+}`,
+
+  "typewriter": `"use client";
+import { useState, useEffect, useRef } from "react";
+
+// Typewriter avec curseur clignotant + delete/retype
+const sentences = ["Build amazing websites.", "Ship faster.", "Delight users."];
+
+export default function Typewriter() {
+  const [text, setText] = useState("");
+  const [sentenceIdx, setSentenceIdx] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = sentences[sentenceIdx];
+    const speed = isDeleting ? 35 : 60;
+
+    const timer = setTimeout(() => {
+      if (!isDeleting && text === current) {
+        setTimeout(() => setIsDeleting(true), 2000);
+      } else if (isDeleting && text === "") {
+        setIsDeleting(false);
+        setSentenceIdx((i) => (i + 1) % sentences.length);
+      } else {
+        setText(isDeleting ? current.slice(0, text.length - 1) : current.slice(0, text.length + 1));
+      }
+    }, speed);
+    return () => clearTimeout(timer);
+  }, [text, isDeleting, sentenceIdx]);
+
+  return <span>{text}<span className="animate-pulse">|</span></span>;
+}`,
+
+  "number-ticker": `"use client";
+import { useRef, useState, useEffect } from "react";
+
+// Compteur anime avec easeOutExpo
+function easeOutExpo(t: number) {
+  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+}
+
+export default function NumberTicker({ target = 1234, duration = 2000 }) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        const start = performance.now();
+        const animate = (now: number) => {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          setValue(Math.round(easeOutExpo(progress) * target));
+          if (progress < 1) requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+        observer.disconnect();
+      }
+    }, { threshold: 0.5 });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [target, duration]);
+
+  return <div ref={ref}>{value.toLocaleString()}</div>;
+}`,
+
+  "border-beam": `/* Border Beam — faisceau lumineux sur la bordure */
+/* Technique: conic-gradient anime avec @property */
+
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes beam-rotate {
+  to { --beam-angle: 360deg; }
+}
+
+/* Card avec beam */
+<div style={{
+  padding: "2px",
+  borderRadius: "16px",
+  background: \`conic-gradient(from var(--beam-angle), transparent 60%, #E1FF6C 75%, transparent 90%)\`,
+  animation: "beam-rotate 3s linear infinite",
+}}>
+  <div style={{ borderRadius: "14px", background: "#0d0d0d", padding: "24px" }}>
+    Contenu de la card
+  </div>
+</div>`,
+
+  "wobble-card": `"use client";
+import { useCallback, useRef } from "react";
+
+// Card qui oscille au mousemove
+export default function WobbleCard({ children }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = \`translate(\${x * 5}px, \${y * 5}px) scale(1.02)\`;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (ref.current) ref.current.style.transform = "translate(0, 0) scale(1)";
+  }, []);
+
+  return (
+    <div ref={ref} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}
+      style={{ transition: "transform 0.2s ease-out" }}>
+      {children}
+    </div>
+  );
+}`,
+
+  "morphing-text": `"use client";
+import { useState, useEffect } from "react";
+
+// Texte qui morphe entre mots avec cross-fade blur
+const words = ["Innovation", "Creativity", "Excellence", "Design"];
+
+export default function MorphingText() {
+  const [index, setIndex] = useState(0);
+  const [phase, setPhase] = useState<"visible" | "morphing">("visible");
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPhase("morphing");
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % words.length);
+        setPhase("visible");
+      }, 500);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <span style={{
+      filter: phase === "morphing" ? "blur(8px)" : "blur(0px)",
+      opacity: phase === "morphing" ? 0 : 1,
+      transition: "filter 0.5s, opacity 0.5s",
+    }}>
+      {words[index]}
+    </span>
+  );
+}`,
+
+  "confetti": `"use client";
+import { useRef, useCallback } from "react";
+
+// Confetti au clic — particules avec physique
+export default function Confetti() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const fire = useCallback((e: React.MouseEvent) => {
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const originX = e.clientX - rect.left;
+    const originY = e.clientY - rect.top;
+
+    for (let i = 0; i < 50; i++) {
+      const el = document.createElement("div");
+      const size = Math.random() * 8 + 4;
+      const color = ["#E1FF6C", "#6CE1FF", "#FF6CE1", "#FF6C6C", "#6CFF9E"][Math.floor(Math.random() * 5)];
+      el.style.cssText = \`position:absolute;width:\${size}px;height:\${size}px;background:\${color};border-radius:\${Math.random()>0.5?"50%":"2px"};left:\${originX}px;top:\${originY}px;pointer-events:none\`;
+      container.appendChild(el);
+
+      let vx = (Math.random() - 0.5) * 12;
+      let vy = -Math.random() * 15 - 5;
+      let frame = 0;
+      const animate = () => {
+        vy += 0.5; // gravity
+        el.style.left = \`\${parseFloat(el.style.left) + vx}px\`;
+        el.style.top = \`\${parseFloat(el.style.top) + vy}px\`;
+        el.style.opacity = String(1 - frame / 60);
+        if (++frame < 60) requestAnimationFrame(animate);
+        else el.remove();
+      };
+      requestAnimationFrame(animate);
+    }
+  }, []);
+
+  return <div ref={containerRef} onClick={fire}><button>Celebrate!</button></div>;
+}`,
+
+  "blob-cursor": `"use client";
+import { useRef, useEffect } from "react";
+
+// Blob gradiante qui suit le curseur avec lerp
+export default function BlobCursor() {
+  const blobRef = useRef<HTMLDivElement>(null);
+  const mouse = useRef({ x: 200, y: 200 });
+  const pos = useRef({ x: 200, y: 200 });
+
+  useEffect(() => {
+    let raf: number;
+    const lerp = () => {
+      pos.current.x += (mouse.current.x - pos.current.x) * 0.08;
+      pos.current.y += (mouse.current.y - pos.current.y) * 0.08;
+      if (blobRef.current) {
+        blobRef.current.style.transform = \`translate(\${pos.current.x - 100}px, \${pos.current.y - 100}px)\`;
+      }
+      raf = requestAnimationFrame(lerp);
+    };
+    raf = requestAnimationFrame(lerp);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return (
+    <div onMouseMove={(e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      mouse.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }}>
+      <div ref={blobRef} style={{
+        width: 200, height: 200, borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(225,255,108,0.3), transparent 70%)",
+        filter: "blur(40px)", position: "absolute", pointerEvents: "none",
+      }} />
+    </div>
+  );
+}`,
+
+  "text-pressure": `"use client";
+// Chaque lettre reagit au curseur: poids + taille + attraction
+
+const handleMouseMove = (e) => {
+  letters.forEach((span) => {
+    const rect = span.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dist = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
+    const maxDist = 150;
+    const t = Math.max(0, 1 - dist / maxDist);
+
+    // Font weight: 100 -> 900
+    span.style.fontWeight = String(100 + Math.round(t * 800));
+    // Scale: 1.0 -> 1.3
+    span.style.transform = \`scale(\${1 + t * 0.3})\`;
+    // Color: white -> accent
+    span.style.color = t > 0.1 ? "#E1FF6C" : "#fff";
+  });
+};`,
+
+  "blur-text": `"use client";
+// Texte qui se deblurre caractere par caractere
+
+// Chaque caractere commence avec blur(12px) + opacity: 0
+// Transition staggeree: delay = index * 15ms
+{text.split("").map((char, i) => (
+  <span key={i} style={{
+    display: "inline-block",
+    filter: visible ? "blur(0px)" : "blur(12px)",
+    opacity: visible ? 1 : 0,
+    transition: \`filter 0.4s ease \${i * 15}ms, opacity 0.4s ease \${i * 15}ms\`,
+  }}>
+    {char === " " ? "\\u00A0" : char}
+  </span>
+))}
+
+// Trigger avec IntersectionObserver
+useEffect(() => {
+  const obs = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) setVisible(true);
+  }, { threshold: 0.3 });
+  obs.observe(ref.current);
+}, []);`,
+
+  "split-text": `"use client";
+// Caracteres disperses qui s'assemblent
+
+// Phase 1: chaque char a une position aleatoire
+const randomPos = chars.map(() => ({
+  x: (Math.random() - 0.5) * 400,
+  y: (Math.random() - 0.5) * 200,
+  rotate: (Math.random() - 0.5) * 120,
+}));
+
+// Phase 2: transition vers position originale
+{chars.map((char, i) => (
+  <span style={{
+    display: "inline-block",
+    transform: assembled
+      ? "translate(0, 0) rotate(0deg)"
+      : \`translate(\${randomPos[i].x}px, \${randomPos[i].y}px) rotate(\${randomPos[i].rotate}deg)\`,
+    opacity: assembled ? 1 : 0,
+    transition: \`all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) \${i * 50}ms\`,
+  }}>
+    {char}
+  </span>
+))}`,
+
+  "shiny-text": `/* Shiny Text — reflet brillant continu */
+/* Technique: background-clip: text + gradient anime */
+
+@keyframes shine-sweep {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shiny-text {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.6) 0%,
+    rgba(225,255,108,0.9) 25%,
+    rgba(255,255,255,0.6) 50%,
+    rgba(255,255,255,0.3) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shine-sweep 3s linear infinite;
+}`,
+
+  "glitch-text": `/* Glitch Text — offset RGB + clip-path slicing */
+
+.glitch {
+  position: relative;
+  font-weight: 900;
+  color: #fff;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+}
+
+.glitch::before {
+  color: #0ff; /* cyan */
+  animation: glitch-1 2s infinite linear alternate;
+}
+
+.glitch::after {
+  color: #f00; /* red */
+  animation: glitch-2 3s infinite linear alternate;
+}
+
+@keyframes glitch-1 {
+  0% { clip-path: inset(40% 0 60% 0); transform: translate(-2px, 0); }
+  20% { clip-path: inset(10% 0 85% 0); transform: translate(2px, 0); }
+  40% { clip-path: inset(70% 0 5% 0); transform: translate(-1px, 0); }
+  60% { clip-path: inset(30% 0 50% 0); transform: translate(3px, 0); }
+  80% { clip-path: inset(80% 0 10% 0); transform: translate(-2px, 0); }
+  100% { clip-path: inset(5% 0 90% 0); transform: translate(1px, 0); }
+}
+
+/* Usage */
+<span className="glitch" data-text="GLITCH">GLITCH</span>`,
 };
 
 export default function AnimationDetail({ slug }: { slug: string }) {

@@ -44,6 +44,21 @@ const previews: Record<string, React.ComponentType> = {
   "spotlight-button": dynamic(() => import("@/components/animations/PreviewSpotlightButton"), { ssr: false }),
   "grid-pattern": dynamic(() => import("@/components/animations/PreviewGridPattern"), { ssr: false }),
   "dot-pattern": dynamic(() => import("@/components/animations/PreviewDotPattern"), { ssr: false }),
+  "aurora-background": dynamic(() => import("@/components/animations/PreviewAuroraBackground"), { ssr: false }),
+  "meteors": dynamic(() => import("@/components/animations/PreviewMeteors"), { ssr: false }),
+  "flip-words": dynamic(() => import("@/components/animations/PreviewFlipWords"), { ssr: false }),
+  "typewriter": dynamic(() => import("@/components/animations/PreviewTypewriter"), { ssr: false }),
+  "number-ticker": dynamic(() => import("@/components/animations/PreviewNumberTicker"), { ssr: false }),
+  "border-beam": dynamic(() => import("@/components/animations/PreviewBorderBeam"), { ssr: false }),
+  "wobble-card": dynamic(() => import("@/components/animations/PreviewWobbleCard"), { ssr: false }),
+  "morphing-text": dynamic(() => import("@/components/animations/PreviewMorphingText"), { ssr: false }),
+  "confetti": dynamic(() => import("@/components/animations/PreviewConfetti"), { ssr: false }),
+  "blob-cursor": dynamic(() => import("@/components/animations/PreviewBlobCursor"), { ssr: false }),
+  "text-pressure": dynamic(() => import("@/components/animations/PreviewTextPressure"), { ssr: false }),
+  "blur-text": dynamic(() => import("@/components/animations/PreviewBlurText"), { ssr: false }),
+  "split-text": dynamic(() => import("@/components/animations/PreviewSplitText"), { ssr: false }),
+  "shiny-text": dynamic(() => import("@/components/animations/PreviewShinyText"), { ssr: false }),
+  "glitch-text": dynamic(() => import("@/components/animations/PreviewGlitchText"), { ssr: false }),
 };
 
 export default function AnimationCard({ animation }: { animation: AnimationEntry }) {
