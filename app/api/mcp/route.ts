@@ -1,18 +1,23 @@
+import { NextRequest } from "next/server";
 import { animations, getAnimation } from "@/lib/animations";
 import { getCodeSnippet } from "@/lib/code-snippets";
+import { checkRateLimit } from "@/lib/rate-limit";
+import type { ApiTier } from "@/lib/auth";
 
 // ── MCP Protocol (JSON-RPC 2.0) for Next.js App Router ──
 
 const SERVER_INFO = {
   name: "animation-web",
-  version: "1.0.0",
+  version: "2.0.0",
 };
+
+const BASE_URL = "https://animation-web-orpin.vercel.app";
 
 const TOOLS = [
   {
     name: "list_animations",
     description:
-      "Liste toutes les animations disponibles dans la banque. Retourne slug, nom, description, tags, trigger, difficulte. Filtrable par difficulte et tag.",
+      "Liste toutes les animations disponibles dans la banque (48 animations). Retourne slug, nom, description, tags, trigger, difficulte. Filtrable par difficulte et tag.",
     inputSchema: {
       type: "object" as const,
       properties: {
@@ -23,7 +28,7 @@ const TOOLS = [
         },
         tag: {
           type: "string",
-          description: "Filtrer par tag (ex: hover, CSS, SVG, scroll)",
+          description: "Filtrer par tag (ex: hover, CSS, SVG, scroll, 3D, text, card)",
         },
       },
     },
@@ -31,7 +36,7 @@ const TOOLS = [
   {
     name: "get_animation",
     description:
-      "Recupere le code complet et les instructions d'integration pour une animation specifique. Utilisez le slug obtenu via list_animations.",
+      "Recupere les details et le code complet d'une animation specifique. Le code n'est disponible qu'avec une cle Pro.",
     inputSchema: {
       type: "object" as const,
       properties: {
@@ -52,15 +57,30 @@ const TOOLS = [
       properties: {
         query: {
           type: "string",
-          description: "Mot-cle de recherche (ex: hover, SVG, carousel, scroll, 3D)",
+          description: "Mot-cle de recherche (ex: hover, SVG, carousel, scroll, 3D, text, tabs)",
         },
         include_code: {
           type: "boolean",
-          description: "Inclure le code dans les resultats",
+          description: "Inclure le code dans les resultats (Pro uniquement)",
           default: false,
         },
       },
       required: ["query"],
+    },
+  },
+  {
+    name: "get_preview_url",
+    description:
+      "Retourne l'URL de la preview live d'une animation sur le site deploye.",
+    inputSchema: {
+      type: "object" as const,
+      properties: {
+        slug: {
+          type: "string",
+          description: "Le slug de l'animation",
+        },
+      },
+      required: ["slug"],
     },
   },
 ];
@@ -90,7 +110,7 @@ function handleListAnimations(args: Record<string, unknown>) {
   return [{ type: "text", text: `${results.length} animation(s) trouvee(s):\n\n${text}` }];
 }
 
-function handleGetAnimation(args: Record<string, unknown>) {
+function handleGetAnimation(args: Record<string, unknown>, tier: ApiTier) {
   const slug = args.slug as string;
   const animation = getAnimation(slug);
   if (!animation) {
@@ -102,13 +122,16 @@ function handleGetAnimation(args: Record<string, unknown>) {
     ];
   }
 
-  const snippet = getCodeSnippet(slug);
+  const canAccessCode = tier === "pro" || tier === "admin";
+  const snippet = canAccessCode ? getCodeSnippet(slug) : null;
+
   let response = `# ${animation.name}\n\n`;
   response += `${animation.description}\n\n`;
   response += `- **Trigger**: ${animation.trigger}\n`;
   response += `- **Difficulte**: ${animation.difficulty}\n`;
   response += `- **CSS requis**: ${animation.cssRequired ? "oui" : "non"}\n`;
-  response += `- **Tags**: ${animation.tags.join(", ")}\n\n`;
+  response += `- **Tags**: ${animation.tags.join(", ")}\n`;
+  response += `- **Preview**: ${BASE_URL}/animations/${slug}\n\n`;
 
   if (snippet) {
     response += `## Code JSX/TSX\n\n\`\`\`tsx\n${snippet.code}\n\`\`\`\n\n`;
@@ -116,14 +139,17 @@ function handleGetAnimation(args: Record<string, unknown>) {
       response += `## CSS requis (a ajouter dans globals.css)\n\n\`\`\`css\n${snippet.css}\n\`\`\`\n\n`;
     }
     response += `## Instructions d'integration\n\n${snippet.instructions}\n`;
+  } else if (!canAccessCode) {
+    response += `> **Code non disponible** — Utilisez une cle API Pro pour acceder au code complet de cette animation.\n`;
   }
 
   return [{ type: "text", text: response }];
 }
 
-function handleSearchAnimations(args: Record<string, unknown>) {
+function handleSearchAnimations(args: Record<string, unknown>, tier: ApiTier) {
   const query = (args.query as string).toLowerCase();
   const includeCode = args.include_code === true;
+  const canAccessCode = tier === "pro" || tier === "admin";
 
   const results = animations.filter(
     (a) =>
@@ -137,7 +163,7 @@ function handleSearchAnimations(args: Record<string, unknown>) {
     return [
       {
         type: "text",
-        text: `Aucune animation trouvee pour "${query}". Essayez: hover, scroll, auto, SVG, CSS, JS, 3D, cards, tabs...`,
+        text: `Aucune animation trouvee pour "${query}". Essayez: hover, scroll, auto, SVG, CSS, JS, 3D, cards, tabs, text, background...`,
       },
     ];
   }
@@ -148,8 +174,9 @@ function handleSearchAnimations(args: Record<string, unknown>) {
     text += `### ${a.name} (\`${a.slug}\`)\n`;
     text += `${a.description}\n`;
     text += `Tags: ${a.tags.join(", ")} | ${a.trigger} | ${a.difficulty}\n`;
+    text += `Preview: ${BASE_URL}/animations/${a.slug}\n`;
 
-    if (includeCode) {
+    if (includeCode && canAccessCode) {
       const snippet = getCodeSnippet(a.slug);
       if (snippet) {
         text += `\n\`\`\`tsx\n${snippet.code}\n\`\`\`\n`;
@@ -160,12 +187,36 @@ function handleSearchAnimations(args: Record<string, unknown>) {
     text += "\n";
   }
 
+  if (includeCode && !canAccessCode) {
+    text += `\n> **Note**: Le code n'est pas inclus — utilisez une cle API Pro pour acceder au code.\n`;
+  }
+
   return [{ type: "text", text }];
+}
+
+function handleGetPreviewUrl(args: Record<string, unknown>) {
+  const slug = args.slug as string;
+  const animation = getAnimation(slug);
+  if (!animation) {
+    return [
+      {
+        type: "text",
+        text: `Animation "${slug}" non trouvee. Utilisez list_animations pour voir les slugs disponibles.`,
+      },
+    ];
+  }
+
+  return [
+    {
+      type: "text",
+      text: `**${animation.name}** — Preview live:\n${BASE_URL}/animations/${slug}`,
+    },
+  ];
 }
 
 // ── JSON-RPC handler ──
 
-function handleJsonRpc(method: string, params?: Record<string, unknown>) {
+function handleJsonRpc(method: string, tier: ApiTier, params?: Record<string, unknown>) {
   switch (method) {
     case "initialize":
       return {
@@ -175,7 +226,7 @@ function handleJsonRpc(method: string, params?: Record<string, unknown>) {
       };
 
     case "notifications/initialized":
-      return null; // No response for notifications
+      return null;
 
     case "tools/list":
       return { tools: TOOLS };
@@ -188,9 +239,11 @@ function handleJsonRpc(method: string, params?: Record<string, unknown>) {
         case "list_animations":
           return { content: handleListAnimations(args) };
         case "get_animation":
-          return { content: handleGetAnimation(args) };
+          return { content: handleGetAnimation(args, tier) };
         case "search_animations":
-          return { content: handleSearchAnimations(args) };
+          return { content: handleSearchAnimations(args, tier) };
+        case "get_preview_url":
+          return { content: handleGetPreviewUrl(args) };
         default:
           throw { code: -32601, message: `Tool not found: ${toolName}` };
       }
@@ -205,7 +258,22 @@ function handleJsonRpc(method: string, params?: Record<string, unknown>) {
 }
 
 // ── POST: MCP endpoint ──
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const tier = (request.headers.get("x-api-tier") || "free") as ApiTier;
+  const apiKey = request.headers.get("x-api-key") || "unknown";
+
+  const rl = checkRateLimit(apiKey, tier);
+  if (!rl.allowed) {
+    return new Response(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        id: null,
+        error: { code: -32000, message: "Rate limit exceeded" },
+      }),
+      { status: 429, headers: { "Content-Type": "application/json", "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+    );
+  }
+
   try {
     const body = await request.json();
 
@@ -214,8 +282,8 @@ export async function POST(request: Request) {
       const responses = body
         .map((req) => {
           try {
-            const result = handleJsonRpc(req.method, req.params);
-            if (result === null) return null; // Notification
+            const result = handleJsonRpc(req.method, tier, req.params);
+            if (result === null) return null;
             return { jsonrpc: "2.0", id: req.id, result };
           } catch (err) {
             const error = err as { code?: number; message?: string };
@@ -234,7 +302,7 @@ export async function POST(request: Request) {
     }
 
     // Single request
-    const result = handleJsonRpc(body.method, body.params);
+    const result = handleJsonRpc(body.method, tier, body.params);
     if (result === null) {
       return new Response(null, { status: 204 });
     }
@@ -256,15 +324,35 @@ export async function POST(request: Request) {
   }
 }
 
-// ── GET: server discovery ──
+// ── GET: server discovery (open, no auth required) ──
 export async function GET() {
   return new Response(
     JSON.stringify({
       ...SERVER_INFO,
       description:
-        "Banque d'animations web production-ready. 12 animations avec code copiable, CSS, et instructions d'integration pour AI agents.",
+        "Banque de 48 animations web production-ready. Code copiable, CSS, et instructions d'integration pour AI agents. Tiers: free (metadata), pro (full code).",
       protocolVersion: "2025-03-26",
       tools: TOOLS.map((t) => ({ name: t.name, description: t.description })),
+      authentication: {
+        type: "api-key",
+        header: "x-api-key",
+        tiers: {
+          free: "Metadata, search, list — no code access",
+          pro: "Full code access + all tools",
+        },
+      },
+      configuration: {
+        claude_desktop: {
+          mcpServers: {
+            "animation-web": {
+              command: "npx",
+              args: ["-y", "mcp-remote", `${BASE_URL}/api/mcp`],
+              env: { API_KEY: "your-api-key-here" },
+            },
+          },
+        },
+        claude_code: `claude mcp add animation-web -- npx -y mcp-remote ${BASE_URL}/api/mcp`,
+      },
     }),
     { headers: { "Content-Type": "application/json" } }
   );
